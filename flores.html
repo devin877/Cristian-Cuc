@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bachillerato en Computación</title>
+
+<style>
+
+/* =========================
+   CONFIGURACIÓN GENERAL
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #020617;
+    color: white;
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   FONDO ESPACIAL
+========================= */
+
+.fondo {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 30%, #172554 0%, transparent 35%),
+        radial-gradient(circle at 80% 70%, #312e81 0%, transparent 35%),
+        #020617;
+    z-index: -3;
+}
+
+.estrellas,
+.estrellas::before,
+.estrellas::after {
+    position: fixed;
+    inset: 0;
+    content: "";
+    background-image:
+        radial-gradient(2px 2px at 20px 30px, white, transparent),
+        radial-gradient(1px 1px at 100px 150px, white, transparent),
+        radial-gradient(2px 2px at 250px 80px, white, transparent),
+        radial-gradient(1px 1px at 400px 200px, white, transparent),
+        radial-gradient(2px 2px at 600px 100px, white, transparent),
+        radial-gradient(1px 1px at 800px 300px, white, transparent),
+        radial-gradient(2px 2px at 1000px 150px, white, transparent);
+    background-size: 900px 500px;
+    animation: estrellas 25s linear infinite;
+    z-index: -2;
+}
+
+.estrellas::before {
+    opacity: .5;
+    animation-duration: 40s;
+}
+
+.estrellas::after {
+    opacity: .3;
+    animation-duration: 60s;
+}
+
+@keyframes estrellas {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(500px);
+    }
+}
+
+
+/* =========================
+   PANTALLAS
+========================= */
+
+.pantalla {
+    min-height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 30px;
+    animation: aparecer .8s ease;
+}
+
+.pantalla.activa {
+    display: flex;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: scale(.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* =========================
+   PRIMERA PANTALLA
+========================= */
+
+.logo {
+    font-size: 70px;
+    margin-bottom: 15px;
+    animation: flotar 3s ease-in-out infinite;
+}
+
+@keyframes flotar {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+h1 {
+    text-align: center;
+    font-size: clamp(35px, 7vw, 70px);
+    margin-bottom: 15px;
+
+    background: linear-gradient(
+        90deg,
+        #38bdf8,
+        #818cf8,
+        #c084fc,
+        #38bdf8
+    );
+
+    background-size: 300%;
+    -webkit-background-clip: text;
+    color: transparent;
+
+    animation: gradiente 6s linear infinite;
+}
+
+@keyframes gradiente {
+    0% {
+        background-position: 0%;
+    }
+
+    100% {
+        background-position: 300%;
+    }
+}
+
+.subtitulo {
+    color: #cbd5e1;
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 45px;
+}
+
+
+/* =========================
+   BOTONES PRINCIPALES
+========================= */
+
+.botones-inicio {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.boton {
+    position: relative;
+    padding: 18px 40px;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 15px;
+
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(12px);
+
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+    overflow: hidden;
+
+    transition: .35s;
+}
+
+.boton::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.25),
+        transparent
+    );
+
+    transition: .5s;
+}
+
+.boton:hover::before {
+    left: 100%;
+}
+
+.boton:hover {
+    transform: translateY(-7px) scale(1.04);
+    box-shadow: 0 0 30px rgba(56,189,248,.35);
+    border-color: #38bdf8;
+}
+
+.boton.iniciar:hover {
+    box-shadow: 0 0 30px rgba(129,140,248,.5);
+}
+
+.boton.video:hover {
+    box-shadow: 0 0 30px rgba(192,132,252,.5);
+}
+
+
+/* =========================
+   SEGUNDA PANTALLA
+========================= */
+
+.titulo-pagina {
+    font-size: clamp(30px, 5vw, 50px);
+    margin-bottom: 45px;
+}
+
+.menu {
+    width: 100%;
+    max-width: 1100px;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+
+/* =========================
+   VENTANILLAS
+========================= */
+
+.tarjeta {
+    min-height: 190px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 25px;
+
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 25px;
+
+    backdrop-filter: blur(15px);
+
+    cursor: pointer;
+
+    opacity: 0;
+    transform: translateY(40px);
+
+    animation: tarjetaEntrada .7s forwards;
+
+    transition: .4s;
+}
+
+.tarjeta:nth-child(1) {
+    animation-delay: .1s;
+}
+
+.tarjeta:nth-child(2) {
+    animation-delay: .2s;
+}
+
+.tarjeta:nth-child(3) {
+    animation-delay: .3s;
+}
+
+.tarjeta:nth-child(4) {
+    animation-delay: .4s;
+}
+
+.tarjeta:nth-child(5) {
+    animation-delay: .5s;
+}
+
+@keyframes tarjetaEntrada {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tarjeta:hover {
+    transform: translateY(-10px) scale(1.03);
+    border-color: #38bdf8;
+
+    box-shadow:
+        0 0 25px rgba(56,189,248,.25),
+        inset 0 0 20px rgba(255,255,255,.03);
+}
+
+.icono {
+    font-size: 55px;
+    margin-bottom: 15px;
+    transition: .4s;
+}
+
+.tarjeta:hover .icono {
+    transform: scale(1.2) rotate(5deg);
+}
+
+.tarjeta h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.tarjeta p {
+    color: #94a3b8;
+}
+
+
+/* =========================
+   PANTALLAS INTERNAS
+========================= */
+
+.contenido {
+    width: 100%;
+    max-width: 850px;
+
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.15);
+
+    backdrop-filter: blur(15px);
+
+    border-radius: 25px;
+    padding: 40px;
+
+    text-align: center;
+
+    box-shadow: 0 0 40px rgba(0,0,0,.3);
+}
+
+.contenido h2 {
+    font-size: 38px;
+    margin-bottom: 20px;
+}
+
+.contenido p {
+    color: #cbd5e1;
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+
+/* =========================
+   VIDEO
+========================= */
+
+.video-contenedor {
+    width: 100%;
+    max-width: 900px;
+
+    background: rgba(255,255,255,.07);
+    padding: 20px;
+
+    border-radius: 25px;
+    border: 1px solid rgba(255,255,255,.15);
+
+    backdrop-filter: blur(15px);
+
+    box-shadow: 0 0 40px rgba(0,0,0,.4);
+}
+
+video {
+    width: 100%;
+    max-height: 550px;
+    border-radius: 15px;
+    display: block;
+}
+
+
+/* =========================
+   BOTÓN VOLVER
+========================= */
+
+.volver {
+    margin-top: 30px;
+
+    padding: 13px 30px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: #2563eb;
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: .3s;
+}
+
+.volver:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px rgba(37,99,235,.6);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+
+    .menu {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .menu {
+        grid-template-columns: 1fr;
+    }
+
+    .botones-inicio {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .boton {
+        width: 100%;
+    }
+
+    .contenido {
+        padding: 25px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="fondo"></div>
+<div class="estrellas"></div>
+
+
+<!-- ==================================
+     PRIMERA PANTALLA
+================================== -->
+
+<section id="inicio" class="pantalla activa">
+
+    <div class="logo">💻</div>
+
+    <h1>BACHILLERATO EN COMPUTACIÓN</h1>
+
+    <p class="subtitulo">
+        Bienvenidos a nuestra página educativa
+    </p>
+
+    <div class="botones-inicio">
+
+        <!-- BOTÓN INICIAR -->
+
+        <button class="boton iniciar" onclick="mostrarPantalla('menu')">
+            🚀 INICIAR
+        </button>
+
+
+        <!-- BOTÓN VIDEO -->
+
+        <button class="boton video" onclick="mostrarPantalla('video')">
+            🎬 VER VIDEO
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================
+     SEGUNDA PANTALLA - MENÚ
+================================== -->
+
+<section id="menu" class="pantalla">
+
+    <h1 class="titulo-pagina">
+        MENÚ PRINCIPAL
+    </h1>
+
+
+    <div class="menu">
+
+
+        <!-- 1 -->
+
+        <div class="tarjeta" onclick="mostrarPantalla('cursos')">
+
+            <div class="icono">📚</div>
+
+            <h2>Cursos</h2>
+
+            <p>Conoce nuestras materias</p>
+
+        </div>
+
+
+        <!-- 2 -->
+
+        <div class="tarjeta" onclick="mostrarPantalla('horarios')">
+
+            <div class="icono">🕐</div>
+
+            <h2>Horarios</h2>
+
+            <p>Consulta nuestros horarios</p>
+
+        </div>
+
+
+        <!-- 3 -->
+
+        <div class="tarjeta" onclick="mostrarPantalla('maestros')">
+
+            <div class="icono">👨‍🏫</div>
+
+            <h2>Maestros</h2>
+
+            <p>Conoce a nuestros docentes</p>
+
+        </div>
+
+
+        <!-- 4 -->
+
+        <div class="tarjeta" onclick="mostrarPantalla('informacion')">
+
+            <div class="icono">💻</div>
+
+            <h2>Información</h2>
+
+            <p>Información del bachillerato</p>
+
+        </div>
+
+
+        <!-- 5 -->
+
+        <div class="tarjeta" onclick="mostrarPantalla('contacto')">
+
+            <div class="icono">📞</div>
+
+            <h2>Contacto</h2>
+
+            <p>Encuentra nuestros medios de contacto</p>
+
+        </div>
+
+    </div>
+
+
+    <button class="volver" onclick="mostrarPantalla('inicio')">
+        ← VOLVER
+    </button>
+
+</section>
+
+
+
+<!-- ==================================
+     CURSOS
+================================== -->
+
+<section id="cursos" class="pantalla">
+
+    <div class="contenido">
+
+        <h2>📚 Cursos</h2>
+
+        <p>
+            Aquí podrás colocar información sobre las
+            materias y cursos que se estudian en el
+            Bachillerato en Computación.
+        </p>
+
+        <button class="volver" onclick="mostrarPantalla('menu')">
+            ← VOLVER
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================
+     HORARIOS
+================================== -->
+
+<section id="horarios" class="pantalla">
+
+    <div class="contenido">
+
+        <h2>🕐 Horarios</h2>
+
+        <p>
+            Aquí podrás colocar los horarios de clases,
+            recreos y actividades académicas.
+        </p>
+
+        <button class="volver" onclick="mostrarPantalla('menu')">
+            ← VOLVER
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================
+     MAESTROS
+================================== -->
+
+<section id="maestros" class="pantalla">
+
+    <div class="contenido">
+
+        <h2>👨‍🏫 Maestros</h2>
+
+        <p>
+            Aquí podrás colocar fotografías,
+            nombres y materias de cada maestro.
+        </p>
+
+        <button class="volver" onclick="mostrarPantalla('menu')">
+            ← VOLVER
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================
+     INFORMACIÓN
+================================== -->
+
+<section id="informacion" class="pantalla">
+
+    <div class="contenido">
+
+        <h2>💻 Información</h2>
+
+        <p>
+            En esta sección podrás explicar qué es el
+            Bachillerato en Computación, sus objetivos,
+            duración y oportunidades.
+        </p>
+
+        <button class="volver" onclick="mostrarPantalla('menu')">
+            ← VOLVER
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================
+     CONTACTO
+================================== -->
+
+<section id="contacto" class="pantalla">
+
+    <div class="contenido">
+
+        <h2>📞 Contacto</h2>
+
+        <p>
+            Aquí podrás colocar el teléfono,
+            correo electrónico, redes sociales
+            y dirección del establecimiento.
+        </p>
+
+        <button class="volver" onclick="mostrarPantalla('menu')">
+            ← VOLVER
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================
+     PANTALLA DEL VIDEO
+================================== -->
+
+<section id="video" class="pantalla">
+
+    <h1 class="titulo-pagina">
+        🎬 NUESTRO ESTABLECIMIENTO
+    </h1>
+
+
+    <div class="video-contenedor">
+
+        <video controls>
+
+            <source
+                src="videos/establecimiento.mp4"
+                type="video/mp4"
+            >
+
+            Tu navegador no puede reproducir este video.
+
+        </video>
+
+    </div>
+
+
+    <button class="volver" onclick="mostrarPantalla('inicio')">
+        ← VOLVER AL INICIO
+    </button>
+
+</section>
+
+
+
+<!-- ==================================
+     JAVASCRIPT
+================================== -->
+
+<script>
+
+function mostrarPantalla(nombre) {
+
+    // Ocultar todas las pantallas
+
+    const pantallas = document.querySelectorAll(".pantalla");
+
+    pantallas.forEach(function(pantalla) {
+
+        pantalla.classList.remove("activa");
+
+    });
+
+
+    // Mostrar la pantalla seleccionada
+
+    const pantallaNueva = document.getElementById(nombre);
+
+    pantallaNueva.classList.add("activa");
+
+
+    // Llevar la página hacia arriba
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+</script>
+
+
+</body>
+</html>
